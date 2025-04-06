@@ -39,3 +39,7 @@ Route::get('/enrollment', [StudentController::class, 'showEnrollment']);
 Route::get('/enrollment/delete/{id}', [StudentController::class, 'destroyEnrollment']);
 
 Route::get('/', [StudentController::class, 'dashboard']);
+
+Route::get('/professors', [StudentController::class, 'showProfessors']);
+
+Route::get('/dashboard', [DashboardController::class, 'dashboard']);

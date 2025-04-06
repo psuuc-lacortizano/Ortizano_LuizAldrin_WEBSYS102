@@ -41,8 +41,16 @@
 
         <!-- Program Input -->
         <div class="mb-3">
-            <label for="program" class="form-label fw-bold">Program</label>
-            <input type="text" name="program" class="form-control" value="{{ $student[0]->program }}" required>
+            <label for="program" class="form-label fw-bold">Select Program:</label>
+            <select name="program" class="form-select">
+                <option value="" disabled selected>{{ $student[0]->program }}</option>
+                <option value="BSCIE">Bachelor of Science in Civil Engineering (BSCIE)</option>
+                <option value="BSME">Bachelor of Science in Mechanical Engineering (BSME)</option>
+                <option value="BSEE">Bachelor of Science in Electrical Engineering (BSEE)</option>
+                <option value="BSCOE">Bachelor of Science in Computer Engineering (BSCOE)</option>
+                <option value="BSA">Bachelor of Science in Architecture (BSA)</option>
+                <option value="BSIT">Bachelor of Science in Information Technology (BSIT)</option>
+            </select>
             @error('program')
             <div class="text-danger">{{ $message }}</div>
             @enderror
@@ -56,7 +64,7 @@
 
     <!-- Back to List Link -->
     <div class="text-center mt-3">
-        <a href="/" class="text-dark">Back to List</a>
+        <a href="/student" class="text-dark">Back to List</a>
     </div>
 
     <style>

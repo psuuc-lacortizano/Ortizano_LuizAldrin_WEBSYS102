@@ -37,7 +37,7 @@
 
     <!-- Back to Course List -->
     <div class="text-center mt-3">
-        <a href="/" class="text-dark">Cancel</a>
+        <a href="/info/{id}" class="text-dark">Cancel</a>
     </div>
 
     <style>

@@ -6,6 +6,7 @@
 
 @section('content')
 <style>
+    /* Updated CSS with all Student Management styles */
     .management-container {
         padding: 30px 40px;
         background-color: #F4F4F4;
@@ -35,6 +36,30 @@
     a.add-btn:hover {
         background-color: #555;
         transform: translateY(-2px);
+    }
+
+    .filter-container {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .filter-container label {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .filter-container select {
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        transition: border-color 0.2s;
+    }
+
+    .filter-container select:focus {
+        border-color: #333;
     }
 
     .table-container {
@@ -98,6 +123,18 @@
         transform: translateY(-2px);
     }
 
+    .info-link {
+        color: #333;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s ease-out;
+    }
+
+    .info-link:hover {
+        text-decoration: underline;
+        color: #555;
+    }
+
     .alert-success-custom {
         background-color: #D4EDDA;
         border-color: #C3E6CB;
@@ -145,7 +182,6 @@
         from {
             opacity: 0;
         }
-
         to {
             opacity: 1;
         }
@@ -156,7 +192,6 @@
             opacity: 0;
             transform: translateY(-10px);
         }
-
         to {
             opacity: 1;
             transform: translateY(0);
@@ -168,11 +203,40 @@
             opacity: 0;
             transform: translateX(-15px);
         }
-
         to {
             opacity: 1;
             transform: translateX(0);
         }
+    }
+
+    /* Custom Pagination Styling */
+    .custom-pagination .pagination {
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .custom-pagination .pagination .page-link {
+        padding: 5px 10px;
+        font-size: 12px;
+        border-radius: 5px;
+        margin: 0 3px;
+        color: #333;
+        border-color: #ccc;
+    }
+
+    .custom-pagination .pagination .page-item.active .page-link {
+        background-color: #333;
+        border-color: #333;
+        color: #fff;
+    }
+
+    .custom-pagination .pagination .page-link:hover {
+        background-color: #555;
+        color: #fff;
+    }
+
+    .custom-pagination .pagination .page-link:focus {
+        box-shadow: none;
     }
 </style>
 
@@ -186,8 +250,23 @@
     @endif
     <br>
 
-    <div class="text-end mb-4">
-        <a href="/courses/create" class="add-btn">Add a New Course</a>
+    <!-- Refined Filter UI aligned with Student Management -->
+    <div class="filter-container">
+        <form id="filter-form" method="GET" action="/courses" class="d-flex align-items-center">
+            <label for="course_code" class="mr-3">Filter by Program:</label>
+            <div style="width: 15px;"></div> <!-- Spacer from previous request -->
+            <select name="course_code" id="course_code" onchange="this.form.submit()">
+                <option value="">All Programs</option>
+                @foreach($courseCodes as $prefix)
+                <option value="{{ $prefix }}" {{ $selectedPrefix == $prefix ? 'selected' : '' }}>
+                    {{ $prefix }}
+                </option>
+                @endforeach
+            </select>
+        </form>
+        <div class="text-end mb-4">
+            <a href="/courses/create" class="add-btn">Add a New Course</a>
+        </div>
     </div>
 
     <div class="table-container">
@@ -200,8 +279,8 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
-                @if(empty($courses))
+            <tbody id="courses-table">
+                @if($courses->isEmpty())
                 <tr>
                     <td colspan="4" class="text-center">No courses available</td>
                 </tr>
@@ -221,10 +300,22 @@
                 @endif
             </tbody>
         </table>
+
+        <!-- Pagination Links -->
+        <div class="pagination-links mt-4 text-center">
+            <div class="custom-pagination">
+                {{ $courses->links('pagination::bootstrap-4') }}
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
+    // Updated script to match Student Management
+    document.getElementById('course_code').addEventListener('change', function() {
+        document.getElementById('filter-form').submit();
+    });
+
     setTimeout(function () {
         let alert = document.querySelector('.alert-success-custom');
         if (alert) {

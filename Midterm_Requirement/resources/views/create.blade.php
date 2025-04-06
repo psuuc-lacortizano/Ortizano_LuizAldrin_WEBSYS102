@@ -38,12 +38,12 @@
             <label for="program" class="form-label fw-bold">Select Program:</label>
             <select name="program" class="form-select">
                 <option value="" disabled selected>Select a program</option>
-                <option value="BSCIE">Bachelor of Science in Civil Engineering</option>
-                <option value="BSME">Bachelor of Science in Mechanical Engineering</option>
-                <option value="BSEE">Bachelor of Science in Electrical Engineering</option>
-                <option value="BSCOE">Bachelor of Science in Computer Engineering</option>
-                <option value="BSA">Bachelor of Science in Architecture</option>
-                <option value="BSIT">Bachelor of Science in Information Technology</option>
+                <option value="BSCIE">Bachelor of Science in Civil Engineering (BSCIE)</option>
+                <option value="BSME">Bachelor of Science in Mechanical Engineering (BSME)</option>
+                <option value="BSEE">Bachelor of Science in Electrical Engineering (BSEE)</option>
+                <option value="BSCOE">Bachelor of Science in Computer Engineering (BSCOE)</option>
+                <option value="BSA">Bachelor of Science in Architecture (BSA)</option>
+                <option value="BSIT">Bachelor of Science in Information Technology (BSIT)</option>
             </select>
         </div>
 
@@ -55,7 +55,7 @@
 
     <!-- Back to List -->
     <div class="text-center mt-3">
-        <a href="/" class="text-dark">Back to List</a>
+        <a href="/student" class="text-dark">Back to List</a>
     </div>
 
     <style>

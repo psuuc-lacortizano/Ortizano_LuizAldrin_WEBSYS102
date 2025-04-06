@@ -13,11 +13,14 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome 6.5.2 CSS -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- Font Awesome 6.5.2 Correct Link -->
+<link rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" 
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
 
     <style>
         body {
@@ -230,6 +233,7 @@
             </div>
             <a href="/" class="@yield('active_dashboard')"><i class="far fa-chart-bar"></i> Dashboard</a>
             <a href="/student" class="@yield('active_students')"><i class="far fa-user"></i> Student</a>
+            <a href="/professors" class="@yield('active_professors')"><i class="fa-solid fa-person-chalkboard"></i>Professor</a>
             <a href="/courses" class="@yield('active_courses')"><i class="far fa-folder-open"></i> Course</a>
             <a href="/enrollment" class="@yield('active_enrollment')"><i class="far fa-address-card"></i> Enrollment</a>
         </div>

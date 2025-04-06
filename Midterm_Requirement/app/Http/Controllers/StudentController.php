@@ -9,16 +9,56 @@ class StudentController extends Controller
 {
     // displaying students
     public function dashboard()
-    {
-        return view('dashboard');
-    }
+{
+    $students = DB::select('SELECT * FROM students');
+    $courses = DB::select('SELECT * FROM courses');
+    $enrollments = DB::select('
+        SELECT 
+            students.id AS student_id,
+            students.name AS student_name,
+            students.stud_code,
+            GROUP_CONCAT(CONCAT(courses.course_name, " (Grade: ", enrollments.grades, ")") SEPARATOR "|") AS courses
+        FROM enrollments
+        JOIN students ON enrollments.stud_id = students.id
+        JOIN courses ON enrollments.course_id = courses.id
+        GROUP BY students.id, students.name, students.stud_code
+    ');
+
+    $students_count = count($students);
+    $courses_count = count($courses);
+    $enrollments_count = count($enrollments);
+
+    return view('dashboard', compact(
+        'students',
+        'courses',
+        'enrollments',
+        'students_count',
+        'courses_count',
+        'enrollments_count'
+    ));
+}
 
     // displaying students
-    public function index()
+    // In your controller
+    public function index(Request $request)
     {
-        $students = DB::table('students')->get();
-        return view('index', compact('students'));
+        $programs = DB::table('students')->select('program')->distinct()->get();
+        $program = $request->get('program');
+    
+        if ($program) {
+            $students = DB::table('students')->where('program', $program)->get();
+        } else {
+            $students = DB::table('students')->get();
+        }
+    
+        if ($request->ajax()) {
+            return view('students.table', compact('students'));
+        }
+    
+        return view('index', compact('students', 'programs'));
     }
+    
+
 
     // Create student form
     public function create()
@@ -32,7 +72,7 @@ class StudentController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'stud_code' => 'required|unique:students|regex: /^(\d{2})-UR-(\d{4})$/',
+            'stud_code' => 'required|unique:students|regex: /^(\d{2})-STUD-(\d{4})$/',
             'program' => 'required'
         ]);
 
@@ -170,12 +210,34 @@ class StudentController extends Controller
         return redirect('/info/{id}')->with('error', 'Student not found!');
     }
 
-    // Show all courses
-    public function showCourses()
-    {
-        $courses = DB::select('SELECT * FROM courses');
-        return view('course/courses', compact('courses'));
+    public function showCourses(Request $request)
+{
+    // Get the selected course prefix from the request
+    $selectedPrefix = $request->input('course_code');
+
+    // Get distinct prefixes from course codes (e.g., GE, BSIT, BSCE)
+    $courseCodes = DB::table('courses')
+        ->selectRaw('DISTINCT SUBSTRING(course_code, 1, REGEXP_INSTR(course_code, "[0-9]") - 1) AS prefix')
+        ->where('course_code', 'REGEXP', '[0-9]') // Ensure course_code has numbers to extract prefix
+        ->orderBy('prefix')
+        ->get()
+        ->pluck('prefix');
+
+    // Build the query for courses
+    $query = DB::table('courses')->select('id', 'course_name', 'course_code');
+
+    // Apply filter if a prefix is selected
+    if ($selectedPrefix) {
+        $query->where('course_code', 'LIKE', $selectedPrefix . '%');
     }
+
+    // Paginate the results
+    $courses = $query->paginate(5); // Adjust pagination as needed
+
+    // Return view with data
+    return view('course.courses', compact('courses', 'courseCodes', 'selectedPrefix'));
+}
+
 
     // Create course 
     public function createCourse()
@@ -255,4 +317,22 @@ class StudentController extends Controller
         DB::delete('DELETE FROM enrollments WHERE stud_id = ?', [$id]);
         return redirect('/enrollment')->with('success', 'All enrollments for the student were deleted successfully!');
     }
+
+    public function showProfessors()
+    {
+        $professors = DB::select('
+            SELECT 
+                professors.id AS professor_id,
+                professors.name AS professor_name,
+                GROUP_CONCAT(courses.course_name SEPARATOR "|") AS courses
+            FROM professors
+            LEFT JOIN professor_course ON professors.id = professor_course.professor_id
+            LEFT JOIN courses ON professor_course.course_id = courses.id
+            GROUP BY professors.id, professors.name
+        ');
+
+        return view('professor.professor', compact('professors'));
+    }
+
+    
 }

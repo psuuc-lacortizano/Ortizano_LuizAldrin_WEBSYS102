@@ -6,6 +6,7 @@
 
 @section('content')
 <style>
+    /* Keep existing CSS styles but refine the filter styling */
     .management-container {
         padding: 30px 40px;
         background-color: #F4F4F4;
@@ -35,6 +36,30 @@
     a.add-btn:hover {
         background-color: #555;
         transform: translateY(-2px);
+    }
+
+    .filter-container {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .filter-container label {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .filter-container select {
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        transition: border-color 0.2s;
+    }
+
+    .filter-container select:focus {
+        border-color: #333;
     }
 
     .table-container {
@@ -195,8 +220,20 @@
     @endif
     <br>
 
-    <div class="text-end mb-4">
-        <a href="/create" class="add-btn">Add a New Student</a>
+    <!-- Refined Filter UI -->
+    <div class="filter-container">
+        <form id="filter-form" method="GET" action="/student" class="d-flex align-items-center">
+            <label for="program" class="mr-3">Filter by Program: </label>
+            <select name="program" id="program" onchange="this.form.submit()">
+                <option value="">All Programs</option>
+                @foreach($programs as $program)
+                <option value="{{ $program->program }}" {{ request('program') == $program->program ? 'selected' : '' }}>{{ $program->program }}</option>
+                @endforeach
+            </select>
+        </form>
+        <div class="text-end mb-4">
+            <a href="/create" class="add-btn">Add a New Student</a>
+        </div>
     </div>
 
     <div class="table-container">
@@ -207,13 +244,14 @@
                     <th>Name</th>
                     <th>Student Code</th>
                     <th>Program</th>
+                    <th>Added At</th> <!-- New Column -->
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="students-table">
                 @if($students->isEmpty())
                 <tr>
-                    <td colspan="5" class="text-center">No students enrolled</td>
+                    <td colspan="6" class="text-center">No students enrolled</td>
                 </tr>
                 @else
                 @foreach($students as $student)
@@ -224,6 +262,7 @@
                     </td>
                     <td data-label="Student Code">{{ $student->stud_code }}</td>
                     <td data-label="Program">{{ $student->program }}</td>
+                    <td data-label="Added At">{{ \Carbon\Carbon::parse($student->created_at)->format('M d, Y') }}</td> <!-- Display Time Created -->
                     <td data-label="Actions" class="action-links">
                         <a href="/edit/{{ $student->id }}" class="edit-btn btn btn-warning btn-sm">Edit</a>
                         <a href="/delete/{{ $student->id }}" class="delete-btn btn btn-danger btn-sm"
@@ -238,6 +277,12 @@
 </div>
 
 <script>
+    // Automatically submit the form when the filter dropdown changes
+    document.getElementById('program').addEventListener('change', function() {
+        document.getElementById('filter-form').submit();
+    });
+
+    // Automatically update the table content based on the program filter change
     setTimeout(function () {
         let alert = document.querySelector('.alert-success-custom');
         if (alert) {
@@ -245,6 +290,5 @@
         }
     }, 5000);
 </script>
+
 @endsection
-
-
